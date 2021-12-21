@@ -1,0 +1,43 @@
+{
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `access_key`}}",
+            "secret_key": "{{user `secret_key`}}",
+            "region": "eu-west-2",
+            "ami_name": "UBU-Node-Nginx-7",
+            "source_ami": "ami-0015a39e4b7c0966f",
+            "instance_type": "t2.micro",
+            "security_group_id": "sg-08dd14ff340964174",
+            "ssh_username": "ubuntu"
+        }
+    ],
+    "provisioners": [
+        {
+          "type": "shell",
+          "script": "nginx.sh"
+        },
+        {
+            "type": "file",
+            "source": "default",
+            "destination": "/etc/nginx/sites-available/"
+        },
+        {
+            "type": "shell",
+            "script": "node.sh"
+        },
+        {
+            "type": "file",
+            "source": "hola.js",
+            "destination": "/home/ubuntu/"
+        },
+        {
+            "type": "shell",
+            "script": "pm2.sh"
+        },
+        {
+            "type": "shell",
+            "inline": ["sleep 30", "sudo systemctl restart nginx"]
+        }
+      ]
+}
